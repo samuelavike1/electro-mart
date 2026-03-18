@@ -1,0 +1,506 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Online Marketplace API",
+    "description": "API for managing products and orders in an online marketplace",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://cse341-project1-sczx.onrender.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get all products",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new product",
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Product created successfully"
+          },
+          "400": {
+            "description": "Missing or invalid fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "description",
+                  "category",
+                  "price",
+                  "stock",
+                  "sellerName",
+                  "brand"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Wireless Mouse"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Ergonomic Bluetooth mouse"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "Electronics"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 25.99
+                  },
+                  "stock": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "sellerName": {
+                    "type": "string",
+                    "example": "David Tech Store"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "example": "Logitech"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "example": 4.5
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get a single product by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product ID",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid product id"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update a product",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product ID",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product updated successfully"
+          },
+          "400": {
+            "description": "Missing or invalid fields"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "description",
+                  "category",
+                  "price",
+                  "stock",
+                  "sellerName",
+                  "brand"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Wireless Mouse Pro"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Updated ergonomic Bluetooth mouse"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "Electronics"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 30.99
+                  },
+                  "stock": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "sellerName": {
+                    "type": "string",
+                    "example": "David Tech Store"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "example": "Logitech"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "example": 4.8
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete a product",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product ID",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "400": {
+            "description": "Invalid product id"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/orders/": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get all orders",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Orders retrieved successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Create a new order",
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Order created successfully"
+          },
+          "400": {
+            "description": "Missing or invalid fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "productId",
+                  "customerName",
+                  "customerEmail",
+                  "quantity",
+                  "totalPrice",
+                  "status",
+                  "shippingAddress"
+                ],
+                "properties": {
+                  "productId": {
+                    "type": "string",
+                    "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+                  },
+                  "customerName": {
+                    "type": "string",
+                    "example": "Mary Johnson"
+                  },
+                  "customerEmail": {
+                    "type": "string",
+                    "example": "mary@gmail.com"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "totalPrice": {
+                    "type": "number",
+                    "example": 51.98
+                  },
+                  "status": {
+                    "type": "string",
+                    "example": "Pending"
+                  },
+                  "shippingAddress": {
+                    "type": "string",
+                    "example": "Accra, Ghana"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get a single order by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Order ID",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid order id"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Update an order",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Order ID",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Order updated successfully"
+          },
+          "400": {
+            "description": "Missing or invalid fields"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "productId",
+                  "customerName",
+                  "customerEmail",
+                  "quantity",
+                  "totalPrice",
+                  "status",
+                  "shippingAddress"
+                ],
+                "properties": {
+                  "productId": {
+                    "type": "string",
+                    "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+                  },
+                  "customerName": {
+                    "type": "string",
+                    "example": "Mary Johnson"
+                  },
+                  "customerEmail": {
+                    "type": "string",
+                    "example": "mary@gmail.com"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "totalPrice": {
+                    "type": "number",
+                    "example": 77.97
+                  },
+                  "status": {
+                    "type": "string",
+                    "example": "Shipped"
+                  },
+                  "shippingAddress": {
+                    "type": "string",
+                    "example": "Kumasi, Ghana"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Delete an order",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Order ID",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order deleted successfully"
+          },
+          "400": {
+            "description": "Invalid order id"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  }
+}
