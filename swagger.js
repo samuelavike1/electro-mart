@@ -17,7 +17,7 @@ const doc = {
     },
     servers: [
         {
-            url: 'https://cse341-project1-sczx.onrender.com',
+            url: 'https://electro-mart-37rz.onrender.com',
             description: 'Production server'
         },
         {
