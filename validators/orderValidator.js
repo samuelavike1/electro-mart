@@ -1,11 +1,15 @@
 const { body } = require('express-validator');
+const mongoose = require('mongoose');
 
 const orderValidationRules = () => {
     return [
         body('productId')
             .trim()
             .notEmpty()
-            .withMessage('Product ID is required.'),
+            .withMessage('Product ID is required.')
+            .bail()
+            .custom((value) => mongoose.Types.ObjectId.isValid(value))
+            .withMessage('Product ID must be a valid MongoDB ObjectId.'),
 
         body('customerName')
             .trim()

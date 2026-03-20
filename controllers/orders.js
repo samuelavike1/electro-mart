@@ -61,13 +61,14 @@ const createOrder = asyncHandler(async (req, res) => {
         }
         #swagger.responses[201] = { description: 'Order created successfully' }
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
+        #swagger.responses[404] = { description: 'Referenced product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const result = await createOrderService(req.body);
+    const order = await createOrderService(req.body);
     res.status(201).json({
         success: true,
         message: 'Order created successfully',
-        id: result.insertedId
+        id: order._id
     });
 });
 
@@ -103,7 +104,7 @@ const updateOrder = asyncHandler(async (req, res) => {
         }
         #swagger.responses[204] = { description: 'Order updated successfully' }
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
-        #swagger.responses[404] = { description: 'Order not found' }
+        #swagger.responses[404] = { description: 'Order or referenced product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
     await updateOrderService(req.params.id, req.body);

@@ -8,7 +8,12 @@ const validate = (req, res, next) => {
         return next();
     }
 
-    return next(new ApiError(400, 'Validation failed', errors.array()));
+    const extractedErrors = errors.array().map((err) => ({
+        field: err.path,
+        message: err.msg
+    }));
+
+    return next(new ApiError(400, 'Validation failed', extractedErrors));
 };
 
 module.exports = validate;

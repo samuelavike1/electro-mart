@@ -64,11 +64,11 @@ const createProduct = asyncHandler(async (req, res) => {
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const result = await createProductService(req.body);
+    const product = await createProductService(req.body);
     res.status(201).json({
         success: true,
         message: 'Product created successfully',
-        id: result.insertedId
+        id: product._id
     });
 });
 

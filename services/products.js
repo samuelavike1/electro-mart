@@ -1,24 +1,22 @@
-const { ObjectId } = require('mongodb');
-const { db_init } = require('../db');
+const mongoose = require('mongoose');
+const Product = require('../models/Product');
 const ApiError = require('../errors/ApiError');
 
 const getAllProductsService = async () => {
     try {
-        const db = await db_init();
-        return await db.collection('products').find().toArray();
+        return await Product.find();
     } catch (error) {
         throw new ApiError(500, 'Failed to retrieve products');
     }
 };
 
 const getSingleProductService = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, 'Invalid product id');
     }
 
     try {
-        const db = await db_init();
-        const product = await db.collection('products').findOne({ _id: new ObjectId(id) });
+        const product = await Product.findById(id);
 
         if (!product) {
             throw new ApiError(404, 'Product not found');
@@ -32,56 +30,52 @@ const getSingleProductService = async (id) => {
 };
 
 const createProductService = async (data) => {
-    const product = {
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        price: Number(data.price),
-        stock: Number(data.stock),
-        sellerName: data.sellerName,
-        brand: data.brand,
-        rating: data.rating !== undefined ? Number(data.rating) : 0,
-        createdAt: new Date()
-    };
-
     try {
-        const db = await db_init();
-        const result = await db.collection('products').insertOne(product);
-        return result;
+        return await Product.create({
+            name: data.name,
+            description: data.description,
+            category: data.category,
+            price: Number(data.price),
+            stock: Number(data.stock),
+            sellerName: data.sellerName,
+            brand: data.brand,
+            rating: data.rating !== undefined ? Number(data.rating) : 0
+        });
     } catch (error) {
         throw new ApiError(500, 'Failed to create product');
     }
 };
 
 const updateProductService = async (id, data) => {
-    if (!ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, 'Invalid product id');
     }
 
-    const updatedProduct = {
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        price: Number(data.price),
-        stock: Number(data.stock),
-        sellerName: data.sellerName,
-        brand: data.brand,
-        rating: data.rating !== undefined ? Number(data.rating) : 0,
-        createdAt: data.createdAt ? new Date(data.createdAt) : new Date()
-    };
-
     try {
-        const db = await db_init();
-        const result = await db.collection('products').replaceOne(
-            { _id: new ObjectId(id) },
-            updatedProduct
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            {
+                name: data.name,
+                description: data.description,
+                category: data.category,
+                price: Number(data.price),
+                stock: Number(data.stock),
+                sellerName: data.sellerName,
+                brand: data.brand,
+                rating: data.rating !== undefined ? Number(data.rating) : 0
+            },
+            {
+                new: true,
+                runValidators: true,
+                overwrite: false
+            }
         );
 
-        if (result.matchedCount === 0) {
+        if (!updatedProduct) {
             throw new ApiError(404, 'Product not found');
         }
 
-        return result;
+        return updatedProduct;
     } catch (error) {
         if (error.statusCode) throw error;
         throw new ApiError(500, 'Failed to update product');
@@ -89,19 +83,18 @@ const updateProductService = async (id, data) => {
 };
 
 const deleteProductService = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, 'Invalid product id');
     }
 
     try {
-        const db = await db_init();
-        const result = await db.collection('products').deleteOne({ _id: new ObjectId(id) });
+        const deletedProduct = await Product.findByIdAndDelete(id);
 
-        if (result.deletedCount === 0) {
+        if (!deletedProduct) {
             throw new ApiError(404, 'Product not found');
         }
 
-        return result;
+        return deletedProduct;
     } catch (error) {
         if (error.statusCode) throw error;
         throw new ApiError(500, 'Failed to delete product');

@@ -1,24 +1,23 @@
-const { ObjectId } = require('mongodb');
-const { db_init } = require('../db');
+const mongoose = require('mongoose');
+const Order = require('../models/Order');
+const Product = require('../models/Product');
 const ApiError = require('../errors/ApiError');
 
 const getAllOrdersService = async () => {
     try {
-        const db = await db_init();
-        return await db.collection('orders').find().toArray();
+        return await Order.find().populate('productId', 'name category price brand');
     } catch (error) {
         throw new ApiError(500, 'Failed to retrieve orders');
     }
 };
 
 const getSingleOrderService = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, 'Invalid order id');
     }
 
     try {
-        const db = await db_init();
-        const order = await db.collection('orders').findOne({ _id: new ObjectId(id) });
+        const order = await Order.findById(id).populate('productId', 'name category price brand');
 
         if (!order) {
             throw new ApiError(404, 'Order not found');
@@ -32,54 +31,63 @@ const getSingleOrderService = async (id) => {
 };
 
 const createOrderService = async (data) => {
-    const order = {
-        productId: data.productId,
-        customerName: data.customerName,
-        customerEmail: data.customerEmail,
-        quantity: Number(data.quantity),
-        totalPrice: Number(data.totalPrice),
-        status: data.status,
-        shippingAddress: data.shippingAddress,
-        orderDate: new Date()
-    };
-
     try {
-        const db = await db_init();
-        const result = await db.collection('orders').insertOne(order);
-        return result;
+        const productExists = await Product.findById(data.productId);
+
+        if (!productExists) {
+            throw new ApiError(404, 'Referenced product not found');
+        }
+
+        return await Order.create({
+            productId: data.productId,
+            customerName: data.customerName,
+            customerEmail: data.customerEmail,
+            quantity: Number(data.quantity),
+            totalPrice: Number(data.totalPrice),
+            status: data.status,
+            shippingAddress: data.shippingAddress
+        });
     } catch (error) {
+        if (error.statusCode) throw error;
         throw new ApiError(500, 'Failed to create order');
     }
 };
 
 const updateOrderService = async (id, data) => {
-    if (!ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, 'Invalid order id');
     }
 
-    const updatedOrder = {
-        productId: data.productId,
-        customerName: data.customerName,
-        customerEmail: data.customerEmail,
-        quantity: Number(data.quantity),
-        totalPrice: Number(data.totalPrice),
-        status: data.status,
-        shippingAddress: data.shippingAddress,
-        orderDate: data.orderDate ? new Date(data.orderDate) : new Date()
-    };
-
     try {
-        const db = await db_init();
-        const result = await db.collection('orders').replaceOne(
-            { _id: new ObjectId(id) },
-            updatedOrder
+        const productExists = await Product.findById(data.productId);
+
+        if (!productExists) {
+            throw new ApiError(404, 'Referenced product not found');
+        }
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+            id,
+            {
+                productId: data.productId,
+                customerName: data.customerName,
+                customerEmail: data.customerEmail,
+                quantity: Number(data.quantity),
+                totalPrice: Number(data.totalPrice),
+                status: data.status,
+                shippingAddress: data.shippingAddress
+            },
+            {
+                new: true,
+                runValidators: true,
+                overwrite: false
+            }
         );
 
-        if (result.matchedCount === 0) {
+        if (!updatedOrder) {
             throw new ApiError(404, 'Order not found');
         }
 
-        return result;
+        return updatedOrder;
     } catch (error) {
         if (error.statusCode) throw error;
         throw new ApiError(500, 'Failed to update order');
@@ -87,19 +95,18 @@ const updateOrderService = async (id, data) => {
 };
 
 const deleteOrderService = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, 'Invalid order id');
     }
 
     try {
-        const db = await db_init();
-        const result = await db.collection('orders').deleteOne({ _id: new ObjectId(id) });
+        const deletedOrder = await Order.findByIdAndDelete(id);
 
-        if (result.deletedCount === 0) {
+        if (!deletedOrder) {
             throw new ApiError(404, 'Order not found');
         }
 
-        return result;
+        return deletedOrder;
     } catch (error) {
         if (error.statusCode) throw error;
         throw new ApiError(500, 'Failed to delete order');
