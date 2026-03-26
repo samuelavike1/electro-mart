@@ -5,6 +5,7 @@ router.get('/', (req, res) => {
     res.json({"app":'Online Marketplace API'});
 });
 
+router.use('/auth', require('./auth'));
 router.use('/products', require('./products'));
 router.use('/orders', require('./orders'));
 
