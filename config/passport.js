@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
-const User = require('../models/User');
+const { syncGitHubUser, getUserById } = require('../services/users');
 
 passport.use(
     new GitHubStrategy(
@@ -11,24 +11,7 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                let user = await User.findOne({ githubId: profile.id });
-
-                if (!user) {
-                    user = await User.create({
-                        githubId: profile.id,
-                        username: profile.username,
-                        displayName: profile.displayName || '',
-                        profileUrl: profile.profileUrl || '',
-                        avatarUrl: profile.photos?.[0]?.value || ''
-                    });
-                } else {
-                    user.username = profile.username || user.username;
-                    user.displayName = profile.displayName || user.displayName;
-                    user.profileUrl = profile.profileUrl || user.profileUrl;
-                    user.avatarUrl = profile.photos?.[0]?.value || user.avatarUrl;
-                    await user.save();
-                }
-
+                const user = await syncGitHubUser(profile);
                 return done(null, user);
             } catch (error) {
                 return done(error, null);
@@ -43,7 +26,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.findById(id);
+        const user = await getUserById(id);
         done(null, user);
     } catch (error) {
         done(error, null);

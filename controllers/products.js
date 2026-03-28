@@ -1,4 +1,3 @@
-const asyncHandler = require('../middleware/asyncHandler');
 const {
     getAllProductsService,
     getSingleProductService,
@@ -7,7 +6,7 @@ const {
     deleteProductService
 } = require('../services/products');
 
-const getAllProducts = asyncHandler(async (req, res) => {
+const getAllProducts = async (req, res) => {
     /*  #swagger.summary = 'Get all products'
         #swagger.tags = ['Products']
         #swagger.responses[200] = { description: 'Products retrieved successfully' }
@@ -15,9 +14,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
     */
     const products = await getAllProductsService();
     res.status(200).json(products);
-});
+};
 
-const getSingleProduct = asyncHandler(async (req, res) => {
+const getSingleProduct = async (req, res) => {
     /*  #swagger.summary = 'Get a single product by id'
         #swagger.tags = ['Products']
         #swagger.parameters['id'] = {
@@ -34,9 +33,9 @@ const getSingleProduct = asyncHandler(async (req, res) => {
     */
     const product = await getSingleProductService(req.params.id);
     res.status(200).json(product);
-});
+};
 
-const createProduct = asyncHandler(async (req, res) => {
+const createProduct = async (req, res) => {
     /*  #swagger.summary = 'Create a new product'
         #swagger.tags = ['Products']
         #swagger.requestBody = {
@@ -70,9 +69,9 @@ const createProduct = asyncHandler(async (req, res) => {
         message: 'Product created successfully',
         id: product._id
     });
-});
+};
 
-const updateProduct = asyncHandler(async (req, res) => {
+const updateProduct = async (req, res) => {
     /*  #swagger.summary = 'Update a product'
         #swagger.tags = ['Products']
         #swagger.parameters['id'] = {
@@ -110,9 +109,9 @@ const updateProduct = asyncHandler(async (req, res) => {
     */
     await updateProductService(req.params.id, req.body);
     res.status(204).send();
-});
+};
 
-const deleteProduct = asyncHandler(async (req, res) => {
+const deleteProduct = async (req, res) => {
     /*  #swagger.summary = 'Delete a product'
         #swagger.tags = ['Products']
         #swagger.parameters['id'] = {
@@ -132,7 +131,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
         success: true,
         message: 'Product deleted successfully'
     });
-});
+};
 
 module.exports = {
     getAllProducts,

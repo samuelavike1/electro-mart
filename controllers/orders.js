@@ -1,4 +1,3 @@
-const asyncHandler = require('../middleware/asyncHandler');
 const {
     getAllOrdersService,
     getSingleOrderService,
@@ -7,7 +6,7 @@ const {
     deleteOrderService
 } = require('../services/orders');
 
-const getAllOrders = asyncHandler(async (req, res) => {
+const getAllOrders = async (req, res) => {
     /*  #swagger.summary = 'Get all orders'
         #swagger.tags = ['Orders']
         #swagger.responses[200] = { description: 'Orders retrieved successfully' }
@@ -15,9 +14,9 @@ const getAllOrders = asyncHandler(async (req, res) => {
     */
     const orders = await getAllOrdersService();
     res.status(200).json(orders);
-});
+};
 
-const getSingleOrder = asyncHandler(async (req, res) => {
+const getSingleOrder = async (req, res) => {
     /*  #swagger.summary = 'Get a single order by id'
         #swagger.tags = ['Orders']
         #swagger.parameters['id'] = {
@@ -34,9 +33,9 @@ const getSingleOrder = asyncHandler(async (req, res) => {
     */
     const order = await getSingleOrderService(req.params.id);
     res.status(200).json(order);
-});
+};
 
-const createOrder = asyncHandler(async (req, res) => {
+const createOrder = async (req, res) => {
     /*  #swagger.summary = 'Create a new order'
         #swagger.tags = ['Orders']
         #swagger.requestBody = {
@@ -70,9 +69,9 @@ const createOrder = asyncHandler(async (req, res) => {
         message: 'Order created successfully',
         id: order._id
     });
-});
+};
 
-const updateOrder = asyncHandler(async (req, res) => {
+const updateOrder = async (req, res) => {
     /*  #swagger.summary = 'Update an order'
         #swagger.tags = ['Orders']
         #swagger.parameters['id'] = {
@@ -109,9 +108,9 @@ const updateOrder = asyncHandler(async (req, res) => {
     */
     await updateOrderService(req.params.id, req.body);
     res.status(204).send();
-});
+};
 
-const deleteOrder = asyncHandler(async (req, res) => {
+const deleteOrder = async (req, res) => {
     /*  #swagger.summary = 'Delete an order'
         #swagger.tags = ['Orders']
         #swagger.parameters['id'] = {
@@ -131,7 +130,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
         success: true,
         message: 'Order deleted successfully'
     });
-});
+};
 
 module.exports = {
     getAllOrders,
