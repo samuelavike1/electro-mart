@@ -11,6 +11,7 @@ const githubCallbackSuccess = (req, res) => {
 const getCurrentUser = async (req, res, next) => {
     /*  #swagger.summary = 'Get current authenticated user'
         #swagger.tags = ['Auth']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.responses[200] = { description: 'Current user returned successfully' }
         #swagger.responses[401] = { description: 'Not authenticated' }
     */
@@ -29,7 +30,9 @@ const getCurrentUser = async (req, res, next) => {
 const logout = async (req, res, next) => {
     /*  #swagger.summary = 'Log out current user'
         #swagger.tags = ['Auth']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.responses[200] = { description: 'Logged out successfully' }
+        #swagger.responses[401] = { description: 'Not authenticated' }
     */
     try {
         await logoutUser(req);

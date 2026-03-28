@@ -6,17 +6,21 @@ const {
     deleteProductService
 } = require('../services/products');
 
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
     /*  #swagger.summary = 'Get all products'
         #swagger.tags = ['Products']
         #swagger.responses[200] = { description: 'Products retrieved successfully' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const products = await getAllProductsService();
-    res.status(200).json(products);
+    try {
+        const products = await getAllProductsService();
+        return res.status(200).json(products);
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const getSingleProduct = async (req, res) => {
+const getSingleProduct = async (req, res, next) => {
     /*  #swagger.summary = 'Get a single product by id'
         #swagger.tags = ['Products']
         #swagger.parameters['id'] = {
@@ -31,13 +35,18 @@ const getSingleProduct = async (req, res) => {
         #swagger.responses[404] = { description: 'Product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const product = await getSingleProductService(req.params.id);
-    res.status(200).json(product);
+    try {
+        const product = await getSingleProductService(req.params.id);
+        return res.status(200).json(product);
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
     /*  #swagger.summary = 'Create a new product'
         #swagger.tags = ['Products']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.requestBody = {
             required: true,
             content: {
@@ -60,20 +69,26 @@ const createProduct = async (req, res) => {
             }
         }
         #swagger.responses[201] = { description: 'Product created successfully' }
+        #swagger.responses[401] = { description: 'Authentication required' }
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const product = await createProductService(req.body);
-    res.status(201).json({
-        success: true,
-        message: 'Product created successfully',
-        id: product._id
-    });
+    try {
+        const product = await createProductService(req.body);
+        return res.status(201).json({
+            success: true,
+            message: 'Product created successfully',
+            id: product._id
+        });
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
     /*  #swagger.summary = 'Update a product'
         #swagger.tags = ['Products']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.parameters['id'] = {
             in: 'path',
             description: 'Product ID',
@@ -103,17 +118,23 @@ const updateProduct = async (req, res) => {
             }
         }
         #swagger.responses[204] = { description: 'Product updated successfully' }
+        #swagger.responses[401] = { description: 'Authentication required' }
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
         #swagger.responses[404] = { description: 'Product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    await updateProductService(req.params.id, req.body);
-    res.status(204).send();
+    try {
+        await updateProductService(req.params.id, req.body);
+        return res.status(204).send();
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
     /*  #swagger.summary = 'Delete a product'
         #swagger.tags = ['Products']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.parameters['id'] = {
             in: 'path',
             description: 'Product ID',
@@ -122,15 +143,20 @@ const deleteProduct = async (req, res) => {
             example: '64f1a2b3c4d5e6f7a8b9c0d1'
         }
         #swagger.responses[200] = { description: 'Product deleted successfully' }
+        #swagger.responses[401] = { description: 'Authentication required' }
         #swagger.responses[400] = { description: 'Invalid product id' }
         #swagger.responses[404] = { description: 'Product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    await deleteProductService(req.params.id);
-    res.status(200).json({
-        success: true,
-        message: 'Product deleted successfully'
-    });
+    try {
+        await deleteProductService(req.params.id);
+        return res.status(200).json({
+            success: true,
+            message: 'Product deleted successfully'
+        });
+    } catch (error) {
+        return next(error);
+    }
 };
 
 module.exports = {

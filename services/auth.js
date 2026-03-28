@@ -15,6 +15,10 @@ const getCurrentAuthenticatedUser = async (req) => {
 
 const logoutUser = async (req) => {
     try {
+        if (!req.isAuthenticated || !req.isAuthenticated()) {
+            throw new ApiError(401, 'Not authenticated');
+        }
+
         await new Promise((resolve, reject) => {
             req.logout((logoutError) => {
                 if (logoutError) {

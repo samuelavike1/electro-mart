@@ -6,17 +6,21 @@ const {
     deleteOrderService
 } = require('../services/orders');
 
-const getAllOrders = async (req, res) => {
+const getAllOrders = async (req, res, next) => {
     /*  #swagger.summary = 'Get all orders'
         #swagger.tags = ['Orders']
         #swagger.responses[200] = { description: 'Orders retrieved successfully' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const orders = await getAllOrdersService();
-    res.status(200).json(orders);
+    try {
+        const orders = await getAllOrdersService();
+        return res.status(200).json(orders);
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const getSingleOrder = async (req, res) => {
+const getSingleOrder = async (req, res, next) => {
     /*  #swagger.summary = 'Get a single order by id'
         #swagger.tags = ['Orders']
         #swagger.parameters['id'] = {
@@ -31,13 +35,18 @@ const getSingleOrder = async (req, res) => {
         #swagger.responses[404] = { description: 'Order not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const order = await getSingleOrderService(req.params.id);
-    res.status(200).json(order);
+    try {
+        const order = await getSingleOrderService(req.params.id);
+        return res.status(200).json(order);
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const createOrder = async (req, res) => {
+const createOrder = async (req, res, next) => {
     /*  #swagger.summary = 'Create a new order'
         #swagger.tags = ['Orders']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.requestBody = {
             required: true,
             content: {
@@ -59,21 +68,27 @@ const createOrder = async (req, res) => {
             }
         }
         #swagger.responses[201] = { description: 'Order created successfully' }
+        #swagger.responses[401] = { description: 'Authentication required' }
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
         #swagger.responses[404] = { description: 'Referenced product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    const order = await createOrderService(req.body);
-    res.status(201).json({
-        success: true,
-        message: 'Order created successfully',
-        id: order._id
-    });
+    try {
+        const order = await createOrderService(req.body);
+        return res.status(201).json({
+            success: true,
+            message: 'Order created successfully',
+            id: order._id
+        });
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const updateOrder = async (req, res) => {
+const updateOrder = async (req, res, next) => {
     /*  #swagger.summary = 'Update an order'
         #swagger.tags = ['Orders']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.parameters['id'] = {
             in: 'path',
             description: 'Order ID',
@@ -102,17 +117,23 @@ const updateOrder = async (req, res) => {
             }
         }
         #swagger.responses[204] = { description: 'Order updated successfully' }
+        #swagger.responses[401] = { description: 'Authentication required' }
         #swagger.responses[400] = { description: 'Missing or invalid fields' }
         #swagger.responses[404] = { description: 'Order or referenced product not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    await updateOrderService(req.params.id, req.body);
-    res.status(204).send();
+    try {
+        await updateOrderService(req.params.id, req.body);
+        return res.status(204).send();
+    } catch (error) {
+        return next(error);
+    }
 };
 
-const deleteOrder = async (req, res) => {
+const deleteOrder = async (req, res, next) => {
     /*  #swagger.summary = 'Delete an order'
         #swagger.tags = ['Orders']
+        #swagger.security = [{ "cookieAuth": [] }]
         #swagger.parameters['id'] = {
             in: 'path',
             description: 'Order ID',
@@ -121,15 +142,20 @@ const deleteOrder = async (req, res) => {
             example: '64f1a2b3c4d5e6f7a8b9c0d1'
         }
         #swagger.responses[200] = { description: 'Order deleted successfully' }
+        #swagger.responses[401] = { description: 'Authentication required' }
         #swagger.responses[400] = { description: 'Invalid order id' }
         #swagger.responses[404] = { description: 'Order not found' }
         #swagger.responses[500] = { description: 'Server error' }
     */
-    await deleteOrderService(req.params.id);
-    res.status(200).json({
-        success: true,
-        message: 'Order deleted successfully'
-    });
+    try {
+        await deleteOrderService(req.params.id);
+        return res.status(200).json({
+            success: true,
+            message: 'Order deleted successfully'
+        });
+    } catch (error) {
+        return next(error);
+    }
 };
 
 module.exports = {

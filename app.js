@@ -14,6 +14,7 @@ const ApiError = require('./errors/ApiError');
 const passport = require('./config/passport');
 
 const port = process.env.SERVER_PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(morgan('dev'));
 app.use(cors({
@@ -22,13 +23,18 @@ app.use(cors({
 }));
 app.use(express.json());
 
+if (isProduction) {
+    app.set('trust proxy', 1);
+}
+
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
+        proxy: isProduction,
         cookie: {
-            secure: process.env.NODE_ENV === 'production',
+            secure: isProduction,
             httpOnly: true,
             sameSite: 'lax'
         }

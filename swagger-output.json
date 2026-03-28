@@ -40,7 +40,12 @@
           "401": {
             "description": "Not authenticated"
           }
-        }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
       }
     },
     "/auth/logout": {
@@ -53,8 +58,16 @@
         "responses": {
           "200": {
             "description": "Logged out successfully"
+          },
+          "401": {
+            "description": "Not authenticated"
           }
-        }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
       }
     },
     "/products/": {
@@ -86,10 +99,18 @@
           "400": {
             "description": "Missing or invalid fields"
           },
+          "401": {
+            "description": "Authentication required"
+          },
           "500": {
             "description": "Server error"
           }
         },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -204,6 +225,9 @@
           "400": {
             "description": "Missing or invalid fields"
           },
+          "401": {
+            "description": "Authentication required"
+          },
           "404": {
             "description": "Product not found"
           },
@@ -211,6 +235,11 @@
             "description": "Server error"
           }
         },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -290,13 +319,21 @@
           "400": {
             "description": "Invalid product id"
           },
+          "401": {
+            "description": "Authentication required"
+          },
           "404": {
             "description": "Product not found"
           },
           "500": {
             "description": "Server error"
           }
-        }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
       }
     },
     "/orders/": {
@@ -328,6 +365,9 @@
           "400": {
             "description": "Missing or invalid fields"
           },
+          "401": {
+            "description": "Authentication required"
+          },
           "404": {
             "description": "Referenced product not found"
           },
@@ -335,6 +375,11 @@
             "description": "Server error"
           }
         },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -445,6 +490,9 @@
           "400": {
             "description": "Missing or invalid fields"
           },
+          "401": {
+            "description": "Authentication required"
+          },
           "404": {
             "description": "Order or referenced product not found"
           },
@@ -452,6 +500,11 @@
             "description": "Server error"
           }
         },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -527,13 +580,31 @@
           "400": {
             "description": "Invalid order id"
           },
+          "401": {
+            "description": "Authentication required"
+          },
           "404": {
             "description": "Order not found"
           },
           "500": {
             "description": "Server error"
           }
-        }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "connect.sid",
+        "description": "Session cookie returned after successful GitHub OAuth login."
       }
     }
   }

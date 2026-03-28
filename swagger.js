@@ -15,6 +15,16 @@ const doc = {
         title: 'Online Marketplace API',
         description: 'API for managing products and orders in an online marketplace'
     },
+    components: {
+        securitySchemes: {
+            cookieAuth: {
+                type: 'apiKey',
+                in: 'cookie',
+                name: 'connect.sid',
+                description: 'Session cookie returned after successful GitHub OAuth login.'
+            }
+        }
+    },
     servers: [
         {
             url: 'https://electro-mart-37rz.onrender.com',
