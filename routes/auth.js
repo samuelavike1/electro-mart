@@ -4,7 +4,7 @@ const passport = require('../config/passport');
 const authController = require('../controllers/auth');
 
 router.get(
-    '/github',
+    '/login',
     /*  #swagger.ignore = true */
     passport.authenticate('github', { scope: ['user:email'] })
 );
